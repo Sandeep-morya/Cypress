@@ -16,7 +16,6 @@ export default function App() {
     moviesList(label);
     searchRef.current = label;
     setPage(1)
-    
   }
 
   const moviesList = async (query, page = 1) => {
