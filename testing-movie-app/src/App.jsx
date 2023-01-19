@@ -22,7 +22,7 @@ export default function App() {
     setIsLoading(true);
     try {
       const options = {
-        params: { api_key, query, page, include_adult: false }
+        params: { api_key, query, page }
       }
       const { data } = await axios.get(URL, options)
       setList(data.results)
@@ -45,7 +45,7 @@ export default function App() {
   }, [page]);
 
   return (
-    <div className="main" data-testid='main'>
+    <div className="main">
       <Header {...{ query: searchRef.current, page, handleSearch }} />
 
       <SearchBar {...{ handleSearch }} />

@@ -1,5 +1,7 @@
 {
   "name": "Using fixtures to represent data",
   "email": "hello@cypress.io",
-  "body": "Fixtures are a great way to mock data for responses to routes"
+  "body": "Fixtures are a great way to mock data for responses to routes",
+  "key":"d07a0aca26cbc2a87b8db46242e46675",
+  "url":"https://api.themoviedb.org/3/search/movie"
 }

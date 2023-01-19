@@ -2,7 +2,7 @@ import icon from "./search-outline.svg"
 import { useState } from "react";
 
 const SearchBar = (props) => {
-    const [text, setText] = useState('s');
+    const [text, setText] = useState();
 
     const handleClick = () => {
         props.handleSearch(text)
@@ -10,7 +10,10 @@ const SearchBar = (props) => {
     }
     return (
         <div className="search_bar">
-            <input value={text} onChange={(e) => setText(e.target.value)} />
+            <input 
+            placeholder="Enter Movie Name eg: 'Spiderman' "
+            value={text} 
+            onChange={(e) => setText(e.target.value)} />
             <img
                 onClick={handleClick}
                 src={icon}

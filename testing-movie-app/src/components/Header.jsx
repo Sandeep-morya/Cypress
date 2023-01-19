@@ -2,13 +2,13 @@ import React from "react";
 
 const Header = (props) => {
   const handleClick = ( )=>{
-    if(props.query!=="spiderman" || props.page!==1){
-      props.handleSearch('spiderman')
+    if(props.query!=="Spiderman" || props.page!==1){
+      props.handleSearch('Spiderman')
     }
   }
   return (
     <div className="header">
-      <h1 data-testid='logo' onClick={handleClick}>MoviesLand</h1>
+      <h1 onClick={handleClick}>MoviesLand</h1>
     </div>
   );
 };

@@ -8,8 +8,8 @@ export default function MovieCard({ data }) {
         alt="movie"
       />
       <div className="info">
-        <h4>{data.original_title}</h4>
-        <h6>{getGenre(genre,data.genre_ids)}</h6>
+        <h4 className="title">{data.original_title}</h4>
+        <h6 className="genre">{getGenre(genre,data.genre_ids)}</h6>
       </div>
     </div>
   );
