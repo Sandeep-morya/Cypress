@@ -1,28 +1,22 @@
 /// <reference types= "cypress" />
 import axios from "axios";
-let score = 0;
+import Homepage from "./pom_example/homepage";
+const homepage = new Homepage; //Page object Model
+
 it("All Elements are present ?", () => {
 	cy.get(".lds-roller").should("exist");
-	score++;
 	cy.get(".main").contains("h1", "MoviesLand");
-	score++;
 	cy.get(".search_bar").should("exist");
-	score++;
 	cy.get(".search_bar > input").should("exist");
-	score++;
 	cy.get(".search_bar > img").should(
 		"have.attr",
 		"src",
 		"/src/components/search-outline.svg",
 	);
-	score++;
 	// cy.wait(4000) used to pause the running for given time
 	cy.get(".pages > :nth-child(1)").should("have.html", "Prev");
-	score++;
 	cy.get(".pages > :nth-child(3)").should("have.html", "Next");
-	score++;
 	cy.get(".pages > :nth-child(2)").should("have.text", 1);
-	score++;
 	/* Using Children */
 
 	// cy.wait(2000);
@@ -35,32 +29,21 @@ it("All Elements are present ?", () => {
 		cy.get(".error").should("not.exist");
 		cy.get(".movies").should("exist");
 	});
-	score = score + 3;
 });
 
 it("Search Functionaliy is working", () => {
 	cy.get("input").clear();
 	cy.get("input").type("fhdsajhajshfkjshdak");
 	cy.get(".search_bar > img").click();
+
 	cy.wait(2000);
 	cy.get(".error").should("exist");
 	cy.get(".movies").should("not.exist");
-	score = score + 5;
 	/* Superman */
-	cy.get("input").clear();
-	cy.get("input").type("Superman");
-	cy.get(".search_bar > img").click();
-	cy.wait(1000).then(() => {
-		cy.get(".card").should("have.length", 20);
-	});
-	score = score + 5;
+	homepage.typeAndSearch("Superman",20);
 	/* Ratsasan */
-	cy.get("input").clear();
-	cy.get("input").type("Ratsasan");
-	cy.get(".search_bar > img").click();
-	cy.wait(1000).then(() => {
-		cy.get(".card").should("have.length", 1);
-	});
+	homepage.typeAndSearch("Ratsasan",1);
+
 	cy.get(".card").should(
 		"contain.html",
 		'<img src="https://image.tmdb.org/t/p/original/mruUFlrVKiL994y3vvQBT8R2Vnf.jpg" alt="movie">',
@@ -72,56 +55,26 @@ it("Search Functionaliy is working", () => {
 		.and("contain", "Crime")
 		.and("contain", "Thriller");
 	/* Pagination on this stage */
-	score = score + 10;
-
-	cy.get(".pages > :nth-child(1)").should("be.disabled");
-	cy.get(".pages > :nth-child(2)").should("have.text", 1);
-	cy.get(".pages > :nth-child(3)").should("be.disabled");
-	score = score + 5;
+	homepage.paginationElementTest("be.disabled", 1, "be.disabled");
 });
 
 it("Pagination & Header are working", () => {
 	cy.get("h1").click();
 	cy.get(".lds-roller").should("not.exist");
-	cy.get(".movies", { timeout: 1 }).should("exist");
-	score = score + 3;
-	cy.get(".pages > :nth-child(1)").should("be.disabled");
-	cy.get(".pages > :nth-child(2)").should("have.text", 1);
-	cy.get(".pages > :nth-child(3)").should("be.enabled").click();
+	homepage.paginationElementTest("be.disabled", 1, "be.enabled");
 	/* Click */
-	cy.get(".lds-roller").should("exist");
-	cy.wait(2000).then(() => {
-		cy.get(".lds-roller").should("not.exist");
-		cy.get(".error").should("not.exist");
-		cy.get(".movies").should("exist");
-		cy.get(".pages > :nth-child(2)").should("have.text", 2);
-	});
-	score = score + 5;
-	cy.get(".pages > :nth-child(3)").click();
-	cy.get(".pages > :nth-child(2)").should("have.text", 3);
-	cy.get(".pages > :nth-child(3)").should("be.disabled");
 
-	cy.get(".pages > :nth-child(1)").click();
-	cy.wait(1000).then(() => {
-		cy.get(".lds-roller").should("not.exist");
-		cy.get(".error").should("not.exist");
-		cy.get(".movies").should("exist");
-		cy.get(".pages > :nth-child(2)").should("have.text", 2);
-	});
-	score = score + 5;
-	cy.get(".pages > :nth-child(3)").click();
-	cy.get(".pages > :nth-child(2)").should("have.text", 3);
-	cy.get(".pages > :nth-child(3)").should("be.disabled");
+	homepage.afterChangedPageTest(".pages > :nth-child(3)", 2);
+	/* args: (which-button-want-to-click, value of page after click) */
 
-	cy.get("h1").click();
-	cy.get(".lds-roller", { timeout: 100 }).should("exist");
-	cy.wait(2000).then(() => {
-		cy.get(".lds-roller").should("not.exist");
-		cy.get(".error").should("not.exist");
-		cy.get(".movies").should("exist");
-		cy.get(".pages > :nth-child(2)").should("have.text", 1);
-	});
-	score = score + 5;
+
+	cy.get(".pages > :nth-child(3)").click();
+	homepage.paginationElementTest("be.enabled", 3, "be.disabled");
+	homepage.afterChangedPageTest(".pages > :nth-child(1)", 2);
+
+	cy.get(".pages > :nth-child(3)").click();
+	homepage.paginationElementTest("be.enabled", 3, "be.disabled");
+	homepage.afterChangedPageTest("h1", 1);
 });
 
 it("Result Comparison", () => {
@@ -132,19 +85,16 @@ it("Result Comparison", () => {
 		const {
 			data: { results },
 		} = await axios.get(url, options);
-		cy.get("input").clear().type("Avengers");
-		cy.get(".search_bar > img").click();
-		cy.wait(2000);
 
-		cy.get(".card").should("have.length", results.length);
+		homepage.typeAndSearch("Avengers", results.length);
 
 		results.map((movie, i) => {
 			cy.get(".title").eq(i).should("contain", movie.original_title);
 		});
 	});
-	score = score + 10;
 });
 
-it("Score is Generated", () => {
+/* it.skip("Score is Generated", () => {
 	cy.writeFile("Score.txt", `Total Marks are: ${score} out of 64`);
-});
+}); */
+// last line is 151
